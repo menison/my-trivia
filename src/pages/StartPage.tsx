@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const LandingPage: React.FC = () => {
+const StartPage: React.FC = () => {
   const navigate = useNavigate();
-  const [numQuestions, setNumQuestions] = useState<string>('5');
+  const [numQuestions, setNumQuestions] = useState<string>('10');
   const [difficulty, setDifficulty] = useState<string>('easy');
 
   const handleStartGame = () => {
-    navigate(`/game?numQuestions=${numQuestions}&difficulty=${difficulty}`);
+    navigate(`/game`);
   };
 
   return (
@@ -43,4 +43,4 @@ const LandingPage: React.FC = () => {
   );
 };
 
-export default LandingPage;
+export default StartPage;

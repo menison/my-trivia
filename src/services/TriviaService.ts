@@ -7,6 +7,7 @@ export interface TriviaQuestion {
   question: string;
   correctAnswer: string;
   incorrectAnswers: string[];
+  answerOptions: string[],
   category: string;
 }
 
@@ -40,6 +41,7 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
         correctAnswer: he.decode(correct_answer),
         incorrectAnswers: incorrect_answers.map((answer: string) => he.decode(answer)),
         category: he.decode(category),
+        answerOptions: [he.decode(correct_answer), ...incorrect_answers.map((answer: string) => he.decode(answer))]
       };
     });
 

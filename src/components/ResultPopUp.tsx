@@ -1,13 +1,13 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, Typography, Button } from '@mui/material';
 
-interface GameEndModalProps {
+interface ResultPopUpProps {
   open: boolean;
   score: number;
   onClose: () => void;
 }
 
-const GameEndModal: React.FC<GameEndModalProps> = ({ open, score, onClose }) => {
+const ResultPopUp: React.FC<ResultPopUpProps> = ({ open, score, onClose }) => {
     console.log(`final score: ${score}`);
     return (
       <Dialog open={open} onClose={onClose}>
@@ -23,4 +23,4 @@ const GameEndModal: React.FC<GameEndModalProps> = ({ open, score, onClose }) => 
       </Dialog>
     )
 };
-export default GameEndModal;
+export default ResultPopUp;

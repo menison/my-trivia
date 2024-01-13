@@ -7,10 +7,9 @@ interface QuestionCardProps {
   answerChoices: string[];
   onAnswerClick: (selectedAnswer: string) => void;
   answerFeedback: Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>;
-  onNextButtonClick: () => void; 
+  //onNextButtonClick: () => void; 
 }
-
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback, onNextButtonClick}) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback}) => {
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -59,7 +58,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
                   onClick={() => {
                     onAnswerClick(choice);
                     setIsAnswerSelected(true);
-                    onNextButtonClick(); // Call the callback function when an answer is clicked
                   }}
                   style={{
                     backgroundColor:

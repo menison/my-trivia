@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography } from '@mui/material';
-import GameEndModal from '../components/GameEndModal';
+import GameEndModal from '../components/ResultPopUp';
 
 
 const GameOverPage: React.FC = () => {
