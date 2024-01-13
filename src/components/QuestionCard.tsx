@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert } from '@mui/material';
+import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert, Divider, ClickAwayListener } from '@mui/material';
 
 interface QuestionCardProps {
   question: string;
@@ -7,23 +7,29 @@ interface QuestionCardProps {
   answerChoices: string[];
   onAnswerClick: (selectedAnswer: string) => void;
   answerFeedback: Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>;
+  onNextButtonClick: () => void; 
 }
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback }) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback, onNextButtonClick}) => {
+  const [isAnswerSelected, setIsAnswerSelected] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
+    // Reset isAnswerSelected when a new question is loaded
+    setIsAnswerSelected(false);
+  }, [question]);
+  
+  useEffect(() => {
     const feedback = answerFeedback.find((feedback) => feedback.isSelected);
 
     if (feedback) {
+      setSnackbarOpen(true);
       if (feedback.isCorrect) {
         setSnackbarMessage('Correct! Well done!');
       } else {
-        setSnackbarMessage(`Wrong answer. The correct answer is: ${feedback.choice}`);
+        setSnackbarMessage(`Wrong answer.`);
       }
-
-      setSnackbarOpen(true);
     }
   }, [answerFeedback]);
 
@@ -38,18 +44,32 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
     <>
       <Card>
         <CardContent>
-          <Typography variant="caption" component="div">
-            Category: {category}
-          </Typography>
-          <Typography variant="h6" component="div">
-            {question}
-          </Typography>
-          <Grid container spacing={2}>
-            {answerChoices.map((choice, index) => (
+            <Typography variant="caption" component="div">
+              Category: {category}
+            </Typography>
+            <Typography variant="h6" component="div">
+              {question}
+            </Typography>
+            <Divider light/>
+            <Grid container spacing={2}>
+              {answerChoices.map((choice, index) => (
               <Grid item xs={6} key={index}>
                 <Button
                   fullWidth
-                  onClick={() => onAnswerClick(choice)}
+                  onClick={() => {
+                    onAnswerClick(choice);
+                    setIsAnswerSelected(true);
+                    onNextButtonClick(); // Call the callback function when an answer is clicked
+                  }}
+                  style={{
+                    backgroundColor:
+                      answerFeedback.find((feedback) => feedback.choice === choice)?.isCorrect && isAnswerSelected
+                        ? 'green'
+                        : answerFeedback.find((feedback) => feedback.choice === choice)?.isSelected && isAnswerSelected
+                        ? 'red'
+                        : undefined,
+                  }}
+                  disabled={isAnswerSelected}
                 >
                   {choice}
                 </Button>
@@ -59,7 +79,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
         </CardContent>
       </Card>
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+        <Alert onClose={handleClose} severity={snackbarMessage==='Correct! Well done!' ? 'success' : 'error'} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
