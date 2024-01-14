@@ -1,5 +1,6 @@
 // GameService.ts
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 interface GameService {
   currentQuestionIndex: number;
@@ -15,6 +16,7 @@ interface GameService {
   handleAnswerClick: (selectedAnswer: string, correctAnswer: string) => void;
   handleNextQuestion: () => void;
   handleRestartGame: () => Promise<void>;
+  handleGoHome: () => void;
 }
 
 export const useGameService = (totalQuestions: number, initialScore: number): GameService => {
@@ -22,6 +24,7 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
   const [score, setScore] = useState(initialScore);
   const [showLoading, setShowLoading] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
+  const navigate = useNavigate();
 
   const nextQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
@@ -57,6 +60,14 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
     setShowLoading(false);
   };
 
+  const handleGoHome = () => {
+    setShowLoading(true);
+    setCurrentQuestionIndex(0);
+    setScore(initialScore);
+    setShowLoading(false);
+    navigate('/');
+  }
+
   return {
     currentQuestionIndex,
     totalQuestions,
@@ -71,5 +82,6 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
     handleAnswerClick,
     handleNextQuestion,
     handleRestartGame,
+    handleGoHome,
   };
 };

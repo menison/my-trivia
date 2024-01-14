@@ -1,4 +1,3 @@
-// TriviaGamePage.tsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Card, CardContent, Container, Grid } from '@mui/material';
 import QuestionCard from '../components/QuestionCard';
@@ -17,7 +16,6 @@ const TriviaGamePage: React.FC = () => {
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
   const [answerFeedback, setAnswerFeedback] = useState<Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>>([]);
   
-  // Initialize GameService
   const gameService = useGameService(numQuestionsToFetch, 0);
 
   useEffect(() => {
@@ -39,10 +37,8 @@ const TriviaGamePage: React.FC = () => {
   const getAnswerChoices = useMemo(() => {
     const currentQuestionData = questions[gameService.currentQuestionIndex];
     if (!currentQuestionData) return [];
-
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
     if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers)) return [];
-
     return [correctAnswer, ...incorrectAnswers];
   }, [gameService.currentQuestionIndex, questions]);
 
@@ -51,13 +47,11 @@ const TriviaGamePage: React.FC = () => {
   const handleAnswerClick = (selectedAnswer: string) => {
     const currentQuestionData = questions[gameService.currentQuestionIndex];
     setIsAnswerSelected(true);
-
     const feedback = answerChoices.map((choice) => ({
       choice,
       isCorrect: choice === currentQuestionData.correctAnswer,
       isSelected: choice === selectedAnswer,
     }));
-
     gameService.handleAnswerClick(selectedAnswer, currentQuestionData.correctAnswer);
     setAnswerFeedback(feedback);
   };
@@ -67,7 +61,7 @@ const TriviaGamePage: React.FC = () => {
 
     if (gameService.currentQuestionIndex >= numQuestionsToFetch - 1) {
       setShowResultModal(true);
-      gameService.setIsGameOver(true);//////
+      gameService.setIsGameOver(true);
     } else {
       gameService.handleNextQuestion();
     }
@@ -84,12 +78,16 @@ const TriviaGamePage: React.FC = () => {
       console.error(error);
       gameService.setShowLoading(false);
     }
-    
     setShowResultModal(false);
-    gameService.setIsGameOver(false);//////
+    gameService.setIsGameOver(false);
     gameService.handleRestartGame();
   };
 
+  const handleGoHome = () => {
+    setShowResultModal(false);
+    gameService.setIsGameOver(false);
+    gameService.handleGoHome();
+  }
   return (
     <Container>
       <Grid container spacing={2}>
@@ -122,7 +120,7 @@ const TriviaGamePage: React.FC = () => {
           </Card>
         </Grid>
       </Grid>
-      <ResultModal open={showResultModal} score={gameService.getScore() ?? 0} onClose={handleRestartGame} />
+      <ResultModal open={showResultModal} score={gameService.getScore() ?? 0} onRestart={handleRestartGame} onGoHome={handleGoHome} />
       <Loading showLoading={gameService.showLoading} onClose={() => {gameService.setShowLoading(false); setShowResultModal(false);}} />
     </Container>
   );

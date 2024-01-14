@@ -1,13 +1,22 @@
 import React from 'react';
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, Typography, Grid } from '@mui/material';
 
 interface QProgressProps {
-  questionsLeft: number; // Pass the number of questions left as a prop
-  totalQuestions: number; // Pass the total number of questions as a prop
+  questionsLeft: number;
+  totalQuestions: number;
 }
 
-const MyTimer: React.FC<QProgressProps> = ({ questionsLeft, totalQuestions }) => (
-  <LinearProgress variant="determinate" value={(((totalQuestions - questionsLeft) / totalQuestions) * 100)} />
+const QProgress: React.FC<QProgressProps> = ({ questionsLeft, totalQuestions }) => (
+  <Grid container alignItems="center">
+    <Grid item xs={8}>
+      <LinearProgress variant="determinate" value={(((totalQuestions - questionsLeft) / totalQuestions) * 100)} />
+    </Grid>
+    <Grid item xs={4} style={{ textAlign: 'center' }}>
+      <Typography variant="caption" color="textSecondary">
+        {totalQuestions - questionsLeft} passed / {questionsLeft} left
+      </Typography>
+    </Grid>
+  </Grid>
 );
 
-export default MyTimer;
+export default QProgress;
