@@ -1,3 +1,4 @@
+// GameService.ts
 import { useState } from 'react';
 
 interface GameService {
@@ -7,6 +8,9 @@ interface GameService {
   increaseScore: () => void;
   getScore: () => number;
   resetScore: () => void;
+  handleAnswerClick: (selectedAnswer: string, correctAnswer: string) => void;
+  handleNextQuestion: () => void;
+  handleRestartGame: () => Promise<void>;
 }
 
 export const useGameService = (totalQuestions: number, initialScore: number): GameService => {
@@ -30,6 +34,21 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
     setScore(initialScore);
   };
 
+  const handleAnswerClick = (selectedAnswer: string, correctAnswer: string) => {
+    if (selectedAnswer === correctAnswer) {
+      increaseScore();
+    }
+  };
+
+  const handleNextQuestion = () => {
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+  };
+
+  const handleRestartGame = async () => {
+    setCurrentQuestionIndex(0);
+    setScore(initialScore);
+  };
+
   return {
     currentQuestionIndex,
     totalQuestions,
@@ -37,5 +56,8 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
     increaseScore,
     getScore,
     resetScore,
+    handleAnswerClick,
+    handleNextQuestion,
+    handleRestartGame,
   };
 };

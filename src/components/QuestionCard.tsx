@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert, Divider, ClickAwayListener } from '@mui/material';
+import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert, Divider } from '@mui/material';
+import '../index.css';
 
 interface QuestionCardProps {
   question: string;
@@ -7,7 +8,6 @@ interface QuestionCardProps {
   answerChoices: string[];
   onAnswerClick: (selectedAnswer: string) => void;
   answerFeedback: Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>;
-  //onNextButtonClick: () => void; 
 }
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback}) => {
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
@@ -39,6 +39,20 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
     setSnackbarOpen(false);
   };
 
+  const getButtonClass = (choice: string) => {
+    const feedback = answerFeedback.find((feedback) => feedback.choice === choice);
+  
+    if (feedback && isAnswerSelected) {
+      if (feedback.isCorrect) {
+        return 'correct';
+      } else if (!feedback.isCorrect && feedback.isSelected) {
+        return 'wrong';
+      }
+    }
+    return ''; // Default class if feedback is not found or isAnswerSelected is false
+  };
+  
+  
   return (
     <>
       <Card>
@@ -59,14 +73,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
                     onAnswerClick(choice);
                     setIsAnswerSelected(true);
                   }}
-                  style={{
-                    backgroundColor:
-                      answerFeedback.find((feedback) => feedback.choice === choice)?.isCorrect && isAnswerSelected
-                        ? 'green'
-                        : answerFeedback.find((feedback) => feedback.choice === choice)?.isSelected && isAnswerSelected
-                        ? 'red'
-                        : undefined,
-                  }}
+                  className={getButtonClass(choice)} 
                   disabled={isAnswerSelected}
                 >
                   {choice}
