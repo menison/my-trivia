@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Card, CardContent, Container, Grid } from '@mui/material';
+import { Button, Card, CardContent, Container, Grid, Typography } from '@mui/material';
 import QuestionCard from '../components/QuestionCard';
 import ScoreCard from '../components/ScoreCard';
 import ResultModal from '../components/ResultModal';
-import { TriviaQuestion, fetchTriviaQuestions } from '../services/TriviaService';
+import { TriviaQuestion, fetchTriviaQuestions } from '../services/ApiFetchService';
 import { useGameService } from '../services/GameService';
 import QProgress from '../components/QProgress';
 import Loading from '../components/Loading';
+import '../index.css'
 
 const TriviaGamePage: React.FC = () => {
   const numQuestionsToFetch = 10;
   const difficultyToFetch = 'easy';
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
-  const [showResultModal, setShowResultModal] = useState(false);
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
   const [answerFeedback, setAnswerFeedback] = useState<Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>>([]);
   
@@ -58,9 +58,12 @@ const TriviaGamePage: React.FC = () => {
 
   const handleNextQuestion = () => {
     setIsAnswerSelected(false);
-
     if (gameService.currentQuestionIndex >= numQuestionsToFetch - 1) {
-      setShowResultModal(true);
+      gameService.resetTimer(); 
+      gameService.setIsGameOver(true);
+    } else if (gameService.timer <= 0) {
+      // Disable timer and user interactions when the timer reaches zero
+      gameService.resetTimer(); 
       gameService.setIsGameOver(true);
     } else {
       gameService.handleNextQuestion();
@@ -78,13 +81,11 @@ const TriviaGamePage: React.FC = () => {
       console.error(error);
       gameService.setShowLoading(false);
     }
-    setShowResultModal(false);
     gameService.setIsGameOver(false);
     gameService.handleRestartGame();
   };
 
   const handleGoHome = () => {
-    setShowResultModal(false);
     gameService.setIsGameOver(false);
     gameService.handleGoHome();
   }
@@ -93,6 +94,9 @@ const TriviaGamePage: React.FC = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ScoreCard score={gameService.getScore()} />
+          <Typography variant="h6" component="div">
+            Time Left: {Math.floor(gameService.timer / 60).toString().padStart(2, '0')}:{(gameService.timer % 60).toString().padStart(2, '0')}
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <QProgress questionsLeft={numQuestionsToFetch - gameService.currentQuestionIndex} totalQuestions={numQuestionsToFetch} />
@@ -120,8 +124,8 @@ const TriviaGamePage: React.FC = () => {
           </Card>
         </Grid>
       </Grid>
-      <ResultModal open={showResultModal} score={gameService.getScore() ?? 0} onRestart={handleRestartGame} onGoHome={handleGoHome} />
-      <Loading showLoading={gameService.showLoading} onClose={() => {gameService.setShowLoading(false); setShowResultModal(false);}} />
+      <ResultModal open={gameService.isGameOver} score={gameService.getScore() ?? 0} onRestart={handleRestartGame} onGoHome={handleGoHome} />
+      <Loading showLoading={gameService.showLoading} onClose={() => {gameService.setShowLoading(false);}} />
     </Container>
   );
 };

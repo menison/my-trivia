@@ -42,10 +42,6 @@ body{
   }
 }
 
-.selected {
-  /* Your selected button styling */
-}
-
 button.correct {
   background-color: rgba(0,255,0,0.2);
   border: 1px solid green;
@@ -57,4 +53,23 @@ button.wrong {
   border: 1px solid red;
   border-radius: 10px;
   
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: none;
+}
+
+.overlay.visible {
+  display: block;
+}
+
+btn[disabled]:hover {
+  cursor: not-allowed;
 }
