@@ -9,6 +9,7 @@ export interface TriviaQuestion {
   incorrectAnswers: string[];
   answerOptions: string[],
   category: string;
+  selectedAnswer: string;
 }
 
 interface TriviaApiError<T = unknown> extends AxiosError<T> {
@@ -41,7 +42,8 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
         correctAnswer: he.decode(correct_answer),
         incorrectAnswers: incorrect_answers.map((answer: string) => he.decode(answer)),
         category: he.decode(category),
-        answerOptions: [he.decode(correct_answer), ...incorrect_answers.map((answer: string) => he.decode(answer))]
+        answerOptions: [he.decode(correct_answer), ...incorrect_answers.map((answer: string) => he.decode(answer))],
+        selectedAnswer: '',
       };
     });
 

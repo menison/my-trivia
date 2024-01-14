@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert, Divider } from '@mui/material';
+import {GameService} from '../services/GameService';
 import '../index.css';
 
 interface QuestionCardProps {
@@ -8,19 +9,14 @@ interface QuestionCardProps {
   answerChoices: string[];
   onAnswerClick: (selectedAnswer: string) => void;
   answerFeedback: Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>;
+  gameService: GameService;
 }
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback}) => {
-  const [isAnswerSelected, setIsAnswerSelected] = useState(false);
+const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback, gameService}) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-
-  useEffect(() => {
-    // Reset isAnswerSelected when a new question is loaded
-    setIsAnswerSelected(false);
-  }, [question]);
   
   useEffect(() => {
-    const feedback = answerFeedback.find((feedback) => feedback.isSelected);
+    const feedback = gameService.getAnswerFeedback().find((feedback) => feedback.isSelected);
 
     if (feedback) {
       setSnackbarOpen(true);
@@ -40,18 +36,17 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
   };
 
   const getButtonClass = (choice: string) => {
-    const feedback = answerFeedback.find((feedback) => feedback.choice === choice);
+    const feedback = gameService.getAnswerFeedback().find((feedback) => feedback.choice === choice);
   
-    if (feedback && isAnswerSelected) {
+    if (feedback && gameService.isAnyAnswerSelected) {
       if (feedback.isCorrect) {
         return 'correct';
       } else if (!feedback.isCorrect && feedback.isSelected) {
         return 'wrong';
       }
     }
-    return ''; // Default class if feedback is not found or isAnswerSelected is false
+    return '';
   };
-  
   
   return (
     <>
@@ -71,10 +66,9 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
                   fullWidth
                   onClick={() => {
                     onAnswerClick(choice);
-                    setIsAnswerSelected(true);
                   }}
                   className={getButtonClass(choice)} 
-                  disabled={isAnswerSelected}
+                  disabled={gameService.isAnyAnswerSelected}
                 >
                   {choice}
                 </Button>
