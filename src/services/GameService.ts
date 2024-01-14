@@ -4,6 +4,10 @@ import { useState } from 'react';
 interface GameService {
   currentQuestionIndex: number;
   totalQuestions: number;
+  showLoading: boolean;
+  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isGameOver: boolean;
+  setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>;
   nextQuestion: () => void;
   increaseScore: () => void;
   getScore: () => number;
@@ -16,6 +20,8 @@ interface GameService {
 export const useGameService = (totalQuestions: number, initialScore: number): GameService => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(initialScore);
+  const [showLoading, setShowLoading] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const nextQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
@@ -45,13 +51,19 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
   };
 
   const handleRestartGame = async () => {
+    setShowLoading(true);
     setCurrentQuestionIndex(0);
     setScore(initialScore);
+    setShowLoading(false);
   };
 
   return {
     currentQuestionIndex,
     totalQuestions,
+    showLoading,
+    setShowLoading,
+    isGameOver,
+    setIsGameOver,
     nextQuestion,
     increaseScore,
     getScore,

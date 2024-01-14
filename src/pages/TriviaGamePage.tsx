@@ -1,3 +1,4 @@
+// TriviaGamePage.tsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Card, CardContent, Container, Grid } from '@mui/material';
 import QuestionCard from '../components/QuestionCard';
@@ -6,9 +7,7 @@ import ResultModal from '../components/ResultModal';
 import { TriviaQuestion, fetchTriviaQuestions } from '../services/TriviaService';
 import { useGameService } from '../services/GameService';
 import QProgress from '../components/QProgress';
-import { shuffleArray } from '../utils';
 import Loading from '../components/Loading';
-import '../index.css';
 
 const TriviaGamePage: React.FC = () => {
   const numQuestionsToFetch = 10;
@@ -17,25 +16,25 @@ const TriviaGamePage: React.FC = () => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [isAnswerSelected, setIsAnswerSelected] = useState(false);
   const [answerFeedback, setAnswerFeedback] = useState<Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>>([]);
-  const [showLoading, setShowLoading] = useState(false);
-
+  
   // Initialize GameService
   const gameService = useGameService(numQuestionsToFetch, 0);
 
   useEffect(() => {
     const fetchQuestionsEffect = async () => {
       try {
-        setShowLoading(true);/////
+        gameService.setShowLoading(true);
         const triviaQuestions: TriviaQuestion[] = await fetchTriviaQuestions(numQuestionsToFetch, difficultyToFetch);
         setQuestions(triviaQuestions);
-        setShowLoading(false);/////
+        gameService.setShowLoading(false);
       } catch (error) {
         console.log('fetching error');
         console.error(error);
+        gameService.setShowLoading(false);
       }
     };
     fetchQuestionsEffect();
-  }, [numQuestionsToFetch, difficultyToFetch]);
+  }, [gameService.isGameOver]);
 
   const getAnswerChoices = useMemo(() => {
     const currentQuestionData = questions[gameService.currentQuestionIndex];
@@ -44,7 +43,6 @@ const TriviaGamePage: React.FC = () => {
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
     if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers)) return [];
 
-    //return shuffleArray([correctAnswer, ...incorrectAnswers]);
     return [correctAnswer, ...incorrectAnswers];
   }, [gameService.currentQuestionIndex, questions]);
 
@@ -69,6 +67,7 @@ const TriviaGamePage: React.FC = () => {
 
     if (gameService.currentQuestionIndex >= numQuestionsToFetch - 1) {
       setShowResultModal(true);
+      gameService.setIsGameOver(true);//////
     } else {
       gameService.handleNextQuestion();
     }
@@ -76,15 +75,18 @@ const TriviaGamePage: React.FC = () => {
 
   const handleRestartGame = async () => {
     try {
-      setShowLoading(true);//////
+      gameService.setShowLoading(true);
       const triviaQuestions: TriviaQuestion[] = await fetchTriviaQuestions(numQuestionsToFetch, difficultyToFetch);
       setQuestions(triviaQuestions);
-      setShowLoading(false);//////
+      gameService.setShowLoading(false);
     } catch (error) {
       console.log('fetching error');
       console.error(error);
+      gameService.setShowLoading(false);
     }
+    
     setShowResultModal(false);
+    gameService.setIsGameOver(false);//////
     gameService.handleRestartGame();
   };
 
@@ -121,7 +123,7 @@ const TriviaGamePage: React.FC = () => {
         </Grid>
       </Grid>
       <ResultModal open={showResultModal} score={gameService.getScore() ?? 0} onClose={handleRestartGame} />
-      <Loading showLoading={showLoading} onClose={() => {setShowLoading(false); setShowResultModal(false);}} />
+      <Loading showLoading={gameService.showLoading} onClose={() => {gameService.setShowLoading(false); setShowResultModal(false);}} />
     </Container>
   );
 };

@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import '../index.css';
+import React from "react";
 
 interface LoadingProps{
   showLoading: boolean;
@@ -13,7 +14,7 @@ const Loading: React.FC<LoadingProps> = ({showLoading, onClose}) => {
     <DialogContent>
       <div className="loader-container">
         <div className="loader"></div>
-        <h3>Loading questions...</h3>
+        <h3>Loading...</h3>
       </div>
     </DialogContent>
   </Dialog>
