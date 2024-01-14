@@ -4,16 +4,18 @@ import { Button, Card, CardContent, Container, Grid, Typography } from '@mui/mat
 import QuestionCard from '../components/QuestionCard';
 import ScoreCard from '../components/ScoreCard';
 import ResultModal from '../components/ResultModal';
-import { useGameService } from '../services/GameService';
+import { GameState } from '../hooks/useGameState';
 import QProgress from '../components/QProgress';
 import Loading from '../components/Loading';
 import '../index.css';
+import { useNavigate } from 'react-router-dom';
 
-const TriviaGamePage: React.FC = () => {
-  const numQuestionsToFetch = 10;
-  const difficultyToFetch = 'easy';
-  const gameService = useGameService(numQuestionsToFetch, 0);
+interface TriviaGameProps{
+  gameService: GameState;
+}
 
+const TriviaGame: React.FC<TriviaGameProps> = ({gameService}) => {
+  const navigate = useNavigate();
   React.useEffect(() => {
     const fetchQuestions = async () => {
       await gameService.fetchQuestions();
@@ -31,7 +33,7 @@ const TriviaGamePage: React.FC = () => {
   };
 
   const handleNextQuestion = () => {
-    if (gameService.currentQuestionIndex >= numQuestionsToFetch - 1) {
+    if (gameService.currentQuestionIndex >= gameService.numOfQuestions - 1) {
       gameService.setIsGameOver(true);
       gameService.resetTimer();
     } else if (gameService.timer <= 0) {
@@ -48,6 +50,7 @@ const TriviaGamePage: React.FC = () => {
 
   const handleGoHome = () => {
     gameService.handleGoHome();
+    navigate('/');
   };
 
   return (
@@ -60,7 +63,7 @@ const TriviaGamePage: React.FC = () => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <QProgress questionsLeft={numQuestionsToFetch - gameService.currentQuestionIndex} totalQuestions={numQuestionsToFetch} />
+          <QProgress questionsLeft={gameService.numOfQuestions - gameService.currentQuestionIndex} totalQuestions={gameService.numOfQuestions} />
         </Grid>
         <Grid item xs={12}>
           <Card sx={{ width: 700, height: 350, borderRadius: 5 }}>
@@ -77,7 +80,7 @@ const TriviaGamePage: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <Button fullWidth onClick={handleNextQuestion} disabled={!gameService.isAnyAnswerSelected}>
-                  {gameService.currentQuestionIndex < numQuestionsToFetch - 1 ? 'Next' : 'Finish'}
+                  {gameService.currentQuestionIndex < gameService.numOfQuestions - 1 ? 'Next' : 'Finish'}
                 </Button>
               </Grid>
             </CardContent>
@@ -95,4 +98,4 @@ const TriviaGamePage: React.FC = () => {
   );
 };
 
-export default TriviaGamePage;
+export default TriviaGame;

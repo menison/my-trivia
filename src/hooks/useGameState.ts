@@ -1,11 +1,10 @@
 // GameService.ts
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { fetchTriviaQuestions, TriviaQuestion } from './ApiFetchService';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { fetchTriviaQuestions, TriviaQuestion } from './useApiService';
 
-export interface GameService {
+export interface GameState {
   currentQuestionIndex: number;
-  totalQuestions: number;
+  numOfQuestions: number;
   showLoading: boolean;
   setShowLoading: React.Dispatch<React.SetStateAction<boolean>>;
   isGameOver: boolean;
@@ -27,18 +26,22 @@ export interface GameService {
   getAnswerFeedback: () => Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>
   isAnyAnswerSelected: boolean;
   questionsFetched: boolean;
+  setNumOfQuestions: Dispatch<SetStateAction<number>>;
+  setDifficulty: Dispatch<SetStateAction<string>>;
+  difficulty: string;
 }
 
-export const useGameService = (totalQuestions: number, initialScore: number): GameService => {
+export const useGameState = (totalQuestions: number, initialScore: number, difficultyLevel: string): GameState => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(initialScore);
   const [showLoading, setShowLoading] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  const navigate = useNavigate();
   const [timer, setTimer] = useState(totalQuestions);
   const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
   const [questionsFetched, setQuestionsFetched] = useState(false);
   const [isAnyAnswerSelected, setIsAnyAnswerSelected] = useState(false);
+  const [numOfQuestions, setNumOfQuestions] = useState(totalQuestions);
+  const [difficulty, setDifficulty] = useState(difficultyLevel);
 
   const startTimer = () => {
     setTimer(totalQuestions*30);
@@ -141,12 +144,11 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
     setScore(initialScore);
     setShowLoading(false);
     setQuestionsFetched(false);
-    navigate('/');
   };
 
   return {
     currentQuestionIndex,
-    totalQuestions,
+    numOfQuestions,
     showLoading,
     setShowLoading,
     isGameOver,
@@ -168,5 +170,8 @@ export const useGameService = (totalQuestions: number, initialScore: number): Ga
     getAnswerFeedback,
     isAnyAnswerSelected,
     questionsFetched,
+    setNumOfQuestions,
+    setDifficulty,
+    difficulty
   };
 };

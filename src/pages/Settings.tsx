@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, MenuItem } from '@mui/material';
+import { GameState } from '../hooks/useGameState';
 import { useNavigate } from 'react-router-dom';
 
-const StartPage: React.FC = () => {
-  const navigate = useNavigate();
-  const [numQuestions, setNumQuestions] = useState<string>('10');
+interface SettingsProps{
+  gameService: GameState;
+}
+const Settings: React.FC<SettingsProps> = ({gameService}) => {
+  const [numQuestions, setNumQuestions] = useState(10);
   const [difficulty, setDifficulty] = useState<string>('easy');
+  const navigate = useNavigate();
 
   const handleStartGame = () => {
-    navigate(`/game`);
-  };
+    gameService.setNumOfQuestions(numQuestions);
+    gameService.setDifficulty(difficulty);
+    navigate('/game');
+  }
 
   return (
     <Container>
@@ -20,7 +26,7 @@ const StartPage: React.FC = () => {
         label="Number of Questions"
         type="number"
         value={numQuestions}
-        onChange={(e) => setNumQuestions(e.target.value)}
+        onChange={(e) => setNumQuestions(parseInt(e.target.value, 10))}
         fullWidth
         margin="normal"
       />
@@ -43,4 +49,4 @@ const StartPage: React.FC = () => {
   );
 };
 
-export default StartPage;
+export default Settings;

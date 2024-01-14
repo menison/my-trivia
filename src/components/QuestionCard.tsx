@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert, Divider } from '@mui/material';
-import {GameService} from '../services/GameService';
+import {GameState} from '../hooks/useGameState';
 import '../index.css';
 
 interface QuestionCardProps {
@@ -9,7 +9,7 @@ interface QuestionCardProps {
   answerChoices: string[];
   onAnswerClick: (selectedAnswer: string) => void;
   answerFeedback: Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>;
-  gameService: GameService;
+  gameService: GameState;
 }
 const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback, gameService}) => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
