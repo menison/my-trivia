@@ -1,5 +1,5 @@
 // GameService.ts
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { fetchTriviaQuestions, TriviaQuestion } from "./useApiService";
 import { shuffleArray } from "../utils";
 
@@ -22,7 +22,8 @@ export interface GameState {
   resetTimer: () => void;
   fetchQuestions: () => Promise<void>;
   getCurrentQuestion: () => TriviaQuestion;
-  getAnswerChoices: () => string[];
+  // getAnswerChoices: () => string[];
+  getAnswerChoices: string[];
   getAnswerFeedback: () => Array<{
     choice: string;
     isCorrect: boolean;
@@ -60,7 +61,8 @@ export const useGameState = (
   const [numOfQuestions, setNumOfQuestions] = useState(totalQuestions);
   const [difficulty, setDifficulty] = useState(difficultyLevel);
   const [isFiftyUsed, setIsFiftyUsed] = useState<boolean>(false);
-  const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions / 5);
+  const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions);
+  // const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions / 5);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -87,6 +89,7 @@ export const useGameState = (
         totalQuestions,
         "easy"
       );
+
       setQuestionsFetched(true);
       setShowLoading(false);
       setQuestions(triviaQuestions);
@@ -104,21 +107,29 @@ export const useGameState = (
     return questions.length;
   }
 
-  const getAnswerChoices = (): string[] => {
+  // const getAnswerChoices = (): string[] => {
+  //   const currentQuestionData = questions[currentQuestionIndex];
+  //   if (!currentQuestionData) return [];
+  //   const { correctAnswer, incorrectAnswers } = currentQuestionData;
+  //   if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers))
+  //     return [];
+  //   return [correctAnswer, ...incorrectAnswers];
+  // };
+
+  const getAnswerChoices = useMemo(() => {
     const currentQuestionData = questions[currentQuestionIndex];
     if (!currentQuestionData) return [];
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
-    if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers))
-      return [];
-    return [correctAnswer, ...incorrectAnswers];
-  };
+    if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers)) return [];
+    return shuffleArray([correctAnswer, ...incorrectAnswers]);
+  }, [currentQuestionIndex, questions]);
 
   const getAnswerFeedback = (): Array<{
     choice: string;
     isCorrect: boolean;
     isSelected: boolean;
   }> => {
-    const feedback = getAnswerChoices().map((choice) => ({
+    const feedback = getAnswerChoices.map((choice) => ({
       choice,
       isCorrect: choice === getCurrentQuestion().correctAnswer,
       isSelected: choice === getCurrentQuestion().selectedAnswer,

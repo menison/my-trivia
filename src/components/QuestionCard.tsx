@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -21,8 +21,11 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   onAnswerClick,
   gameService,
 }) => {
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [snackbarMessage, setSnackbarMessage] = useState("");
+  // const [currAnswerOptions, setCurrAnswerOptions] = useState<string[]>([]);
+
+  // useEffect(() => {
+  //   setCurrAnswerOptions(gameService.getAnswerChoices());
+  // }, [gameService.currentQuestionIndex]);
 
   useEffect(() => {
     const feedback = gameService
@@ -68,7 +71,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
     }
   };
 
-  function isButtonWorthRendering(choice: string): boolean {
+  function shouldButtonRender(choice: string): boolean {
     return (
       gameService.isAnyAnswerSelected ||
       (gameService.isFiftyUsed &&
@@ -81,7 +84,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
     <>
       <Button
         onClick={handleLifelineClick}
-        disabled={gameService.isAnyAnswerSelected || gameService.isFiftyUsed}
+        disabled={gameService.isAnyAnswerSelected || gameService.isFiftyUsed || !gameService.numFiftyLeft}
       >
         50-50: {gameService.numFiftyLeft}
       </Button>
@@ -95,7 +98,8 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
           </Typography>
           <Divider light />
           <Grid container spacing={2}>
-            {gameService.getAnswerChoices().map((choice, index) => (
+            {/* {gameService.getAnswerChoices().map((choice, index) => ( */}
+            {gameService.getAnswerChoices.map((choice, index) => (
               <Grid item xs={6} key={index}>
                 <Button
                   fullWidth
@@ -103,7 +107,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
                     onAnswerClick(choice);
                   }}
                   className={getButtonClass(choice)}
-                  disabled={isButtonWorthRendering(choice)}
+                  disabled={shouldButtonRender(choice)}
                 >
                   {choice}
                 </Button>

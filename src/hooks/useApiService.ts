@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as he from 'he';
+import { shuffleArray } from '../utils';
 
 const TRIVIA_API_URL = 'https://opentdb.com/api.php?amount=10';
 
