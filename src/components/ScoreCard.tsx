@@ -6,7 +6,6 @@ interface ScoreCardProps {
 }
 
 const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
-  console.log('ScoreCard rendering'); // Add this line
   return (
     <Card>
       <CardContent>

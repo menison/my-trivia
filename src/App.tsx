@@ -1,14 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import TriviaGamePage from './pages/TriviaGamePage';
-import StartPage from './pages/StartPage';
+import TriviaGame from './pages/TriviaGame';
+import Settings from './pages/Settings';
+import { useGameState } from './hooks/useGameState';
 
 const App: React.FC = () => {
+  const gameService = useGameState();
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<StartPage />} />
-        <Route path="/game" element={<TriviaGamePage />} />
+        <Route path="/" element={<Settings gameService={gameService} />} />
+        <Route path="/game" element={<TriviaGame gameService={gameService}/>} />
       </Routes>
     </Router>
   );

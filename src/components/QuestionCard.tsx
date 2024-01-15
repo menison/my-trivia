@@ -1,80 +1,109 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Typography, Button, Grid, Snackbar, Alert, Divider } from '@mui/material';
-import '../index.css';
+import React, {useEffect} from "react";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Grid,
+  Snackbar,
+  Alert,
+  Divider,
+} from "@mui/material";
+import { GameState } from "../hooks/useGameState";
+import "../index.css";
 
 interface QuestionCardProps {
-  question: string;
-  category: string;
-  answerChoices: string[];
   onAnswerClick: (selectedAnswer: string) => void;
-  answerFeedback: Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>;
+  gameService: GameState;
 }
-const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerChoices, onAnswerClick, answerFeedback}) => {
-  const [isAnswerSelected, setIsAnswerSelected] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-
+const QuestionCard: React.FC<QuestionCardProps> = ({
+  onAnswerClick,
+  gameService,
+}) => {
   useEffect(() => {
-    // Reset isAnswerSelected when a new question is loaded
-    setIsAnswerSelected(false);
-  }, [question]);
-  
-  useEffect(() => {
-    const feedback = answerFeedback.find((feedback) => feedback.isSelected);
+    const feedback = gameService
+      .getAnswerFeedback()
+      .find((feedback) => feedback.isSelected);
 
     if (feedback) {
-      setSnackbarOpen(true);
+      gameService.setSnackbarOpen(true);
       if (feedback.isCorrect) {
-        setSnackbarMessage('Correct! Well done!');
+        gameService.setSnackbarMessage("Correct! Well done!");
       } else {
-        setSnackbarMessage(`Wrong answer.`);
+        gameService.setSnackbarMessage(`Wrong answer.`);
       }
     }
-  }, [answerFeedback]);
+  }, [gameService.isAnyAnswerSelected]);
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setSnackbarOpen(false);
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    gameService.setSnackbarOpen(false);
   };
 
   const getButtonClass = (choice: string) => {
-    const feedback = answerFeedback.find((feedback) => feedback.choice === choice);
-  
-    if (feedback && isAnswerSelected) {
+    const feedback = gameService
+      .getAnswerFeedback()
+      .find((feedback) => feedback.choice === choice);
+
+    if (feedback && gameService.isAnyAnswerSelected) {
       if (feedback.isCorrect) {
-        return 'correct';
+        return "correct";
       } else if (!feedback.isCorrect && feedback.isSelected) {
-        return 'wrong';
+        return "wrong";
       }
     }
-    return ''; // Default class if feedback is not found or isAnswerSelected is false
+    return "";
   };
-  
-  
+
+  const handleLifelineClick = () => {
+    if (!gameService.isFiftyUsed && gameService.numFiftyLeft > 0) {
+      gameService.setIsFiftyUsed(true);
+      gameService.setNumFiftyLeft((prevNumFiftyLeft) => prevNumFiftyLeft - 1);
+    }
+  };
+
+  function shouldButtonRender(choice: string): boolean {
+    return (
+      gameService.isAnyAnswerSelected ||
+      (gameService.isFiftyUsed &&
+        choice !== gameService.getCurrentQuestion().correctAnswer &&
+        choice !== gameService.getCurrentQuestion().incorrectAnswers[0])
+    );
+  }
+
   return (
     <>
+      <Button
+        onClick={handleLifelineClick}
+        disabled={
+          gameService.isAnyAnswerSelected ||
+          gameService.isFiftyUsed ||
+          !gameService.numFiftyLeft
+        }
+      >
+        50-50: {Math.floor(gameService.numFiftyLeft)}
+      </Button>
       <Card>
         <CardContent>
-            <Typography variant="caption" component="div">
-              Category: {category}
-            </Typography>
-            <Typography variant="h6" component="div">
-              {question}
-            </Typography>
-            <Divider light/>
-            <Grid container spacing={2}>
-              {answerChoices.map((choice, index) => (
+          <Typography variant="caption" component="div">
+            Category: {gameService.getCurrentQuestion()?.category}
+          </Typography>
+          <Typography variant="h6" component="div">
+            {gameService.getCurrentQuestion()?.question}
+          </Typography>
+          <Divider light />
+          <Grid container spacing={2}>
+            {gameService.getAnswerChoices.map((choice, index) => (
               <Grid item xs={6} key={index}>
                 <Button
                   fullWidth
                   onClick={() => {
                     onAnswerClick(choice);
-                    setIsAnswerSelected(true);
                   }}
-                  className={getButtonClass(choice)} 
-                  disabled={isAnswerSelected}
+                  className={getButtonClass(choice)}
+                  disabled={shouldButtonRender(choice)}
                 >
                   {choice}
                 </Button>
@@ -83,9 +112,21 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question, category, answerC
           </Grid>
         </CardContent>
       </Card>
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity={snackbarMessage==='Correct! Well done!' ? 'success' : 'error'} sx={{ width: '100%' }}>
-          {snackbarMessage}
+      <Snackbar
+        open={gameService.snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={
+            gameService.snackbarMessage === "Correct! Well done!"
+              ? "success"
+              : "error"
+          }
+          sx={{ width: "100%" }}
+        >
+          {gameService.snackbarMessage}
         </Alert>
       </Snackbar>
     </>
