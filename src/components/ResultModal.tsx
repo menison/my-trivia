@@ -9,7 +9,6 @@ interface ResultModalProps {
 }
 
 const ResultModal: React.FC<ResultModalProps> = ({ open, score, onRestart, onGoHome }) => {
-    console.log(`final score: ${score}`);
     return (
       <Dialog open={open} onClose={onRestart}>
         <DialogTitle>Game Over</DialogTitle>

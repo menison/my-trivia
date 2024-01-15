@@ -1,6 +1,7 @@
 // GameService.ts
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { fetchTriviaQuestions, TriviaQuestion } from './useApiService';
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { fetchTriviaQuestions, TriviaQuestion } from "./useApiService";
+import { shuffleArray } from "../utils";
 
 export interface GameState {
   currentQuestionIndex: number;
@@ -15,23 +16,39 @@ export interface GameState {
   resetScore: () => void;
   handleAnswerClick: (selectedAnswer: string, correctAnswer: string) => void;
   handleNextQuestion: () => void;
-  handleRestartGame: () => Promise<void>;
-  handleGoHome: () => void;
+  handleGoHomeOrRestart: () => void;
   timer: number;
   startTimer: () => void;
   resetTimer: () => void;
   fetchQuestions: () => Promise<void>;
   getCurrentQuestion: () => TriviaQuestion;
   getAnswerChoices: () => string[];
-  getAnswerFeedback: () => Array<{ choice: string; isCorrect: boolean; isSelected: boolean }>
+  getAnswerFeedback: () => Array<{
+    choice: string;
+    isCorrect: boolean;
+    isSelected: boolean;
+  }>;
   isAnyAnswerSelected: boolean;
   questionsFetched: boolean;
   setNumOfQuestions: Dispatch<SetStateAction<number>>;
   setDifficulty: Dispatch<SetStateAction<string>>;
   difficulty: string;
+  isFiftyUsed: boolean;
+  setIsFiftyUsed: React.Dispatch<React.SetStateAction<boolean>>;
+  numFiftyLeft: number;
+  setNumFiftyLeft: Dispatch<SetStateAction<number>>;
+  snackbarOpen: boolean;
+  setSnackbarOpen: Dispatch<SetStateAction<boolean>>;
+  snackbarMessage: string;
+  setSnackbarMessage: Dispatch<SetStateAction<string>>;
+  getActualNumOfQuestions: () => number;
 }
 
-export const useGameState = (totalQuestions: number, initialScore: number, difficultyLevel: string): GameState => {
+export const useGameState = (
+  totalQuestions: number,
+  initialScore: number,
+  difficultyLevel: string
+): GameState => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(initialScore);
   const [showLoading, setShowLoading] = useState(false);
@@ -42,9 +59,13 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
   const [isAnyAnswerSelected, setIsAnyAnswerSelected] = useState(false);
   const [numOfQuestions, setNumOfQuestions] = useState(totalQuestions);
   const [difficulty, setDifficulty] = useState(difficultyLevel);
+  const [isFiftyUsed, setIsFiftyUsed] = useState<boolean>(false);
+  const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions / 5);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const startTimer = () => {
-    setTimer(totalQuestions*30);
+    setTimer(totalQuestions * 30);
   };
 
   const resetTimer = () => {
@@ -55,19 +76,22 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     const timerInterval = setInterval(() => {
       setTimer((prevTimer) => (prevTimer > 0 ? prevTimer - 1 : 0));
     }, 1000);
-
+    console.log("useEffect from timer");
     return () => clearInterval(timerInterval);
   }, [timer]);
 
   const fetchQuestions = async () => {
     try {
       setShowLoading(true);
-      const triviaQuestions: TriviaQuestion[] = await fetchTriviaQuestions(totalQuestions, 'easy');
+      const triviaQuestions: TriviaQuestion[] = await fetchTriviaQuestions(
+        totalQuestions,
+        "easy"
+      );
       setQuestionsFetched(true);
       setShowLoading(false);
       setQuestions(triviaQuestions);
     } catch (error) {
-      console.error('Error fetching trivia questions:', error);
+      console.error("Error fetching trivia questions:", error);
       setShowLoading(false);
     }
   };
@@ -76,15 +100,24 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     return questions[currentQuestionIndex];
   };
 
+  const getActualNumOfQuestions = (): number => {
+    return questions.length;
+  }
+
   const getAnswerChoices = (): string[] => {
     const currentQuestionData = questions[currentQuestionIndex];
     if (!currentQuestionData) return [];
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
-    if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers)) return [];
+    if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers))
+      return [];
     return [correctAnswer, ...incorrectAnswers];
   };
 
-  const getAnswerFeedback = (): Array<{ choice: string; isCorrect: boolean; isSelected: boolean }> => {
+  const getAnswerFeedback = (): Array<{
+    choice: string;
+    isCorrect: boolean;
+    isSelected: boolean;
+  }> => {
     const feedback = getAnswerChoices().map((choice) => ({
       choice,
       isCorrect: choice === getCurrentQuestion().correctAnswer,
@@ -110,9 +143,13 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     setScore(initialScore);
   };
 
+  const resetNumFiftyLeft = () => {
+    setNumFiftyLeft(numOfQuestions/5);
+  }
+
   const handleAnswerClick = (selectedAnswer: string, correctAnswer: string) => {
     setIsAnyAnswerSelected(true);
-    
+
     if (selectedAnswer === correctAnswer) {
       increaseScore();
     }
@@ -123,20 +160,7 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
 
-  // const commonOperations = () {
-
-  // }
-  const handleRestartGame = async () => {
-    setShowLoading(true);
-    setIsAnyAnswerSelected(false);
-    setIsGameOver(false);
-    setCurrentQuestionIndex(0);
-    setScore(initialScore);
-    setShowLoading(false);
-    setQuestionsFetched(false);
-  };
-
-  const handleGoHome = () => {
+  const handleGoHomeOrRestart = () => {
     setIsGameOver(false);
     setShowLoading(true);
     setIsAnyAnswerSelected(false);
@@ -144,6 +168,8 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     setScore(initialScore);
     setShowLoading(false);
     setQuestionsFetched(false);
+    setIsFiftyUsed(false);
+    resetNumFiftyLeft();
   };
 
   return {
@@ -159,8 +185,7 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     resetScore,
     handleAnswerClick,
     handleNextQuestion,
-    handleRestartGame,
-    handleGoHome,
+    handleGoHomeOrRestart,
     timer,
     startTimer,
     resetTimer,
@@ -172,6 +197,16 @@ export const useGameState = (totalQuestions: number, initialScore: number, diffi
     questionsFetched,
     setNumOfQuestions,
     setDifficulty,
-    difficulty
+    difficulty,
+    isFiftyUsed,
+    setIsFiftyUsed,
+    numFiftyLeft,
+    setNumFiftyLeft,
+    snackbarOpen,
+    setSnackbarOpen,
+    snackbarMessage,
+    setSnackbarMessage,
+    getActualNumOfQuestions,
   };
 };
+

@@ -16,17 +16,21 @@ interface TriviaApiError<T = unknown> extends AxiosError<T> {
   response?: AxiosResponse<T>;
 }
 
-// Function to check if an error is a rate limit error
+// // Function to check if an error is a rate limit error
+// const isRateLimitError = (error: TriviaApiError): boolean => {
+//   return error.response?.status === 429;
+// };
+
+let questionsFetched = false;
+
 const isRateLimitError = (error: TriviaApiError): boolean => {
   return error.response?.status === 429;
 };
 
-let questionsFetched = false;
-
 export const fetchTriviaQuestions = async (amount: number, difficulty: string): Promise<TriviaQuestion[]> => {
   try {
     console.log('Fetching trivia questions...');
-
+    
     const response = await axios.get(TRIVIA_API_URL, {
       params: {
         amount,
@@ -34,6 +38,11 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
         difficulty,
       },
     });
+
+    // Check the response code
+    // if ( response && (response.data.response_code === 1 || response.data.result.length < amount)) {
+    //   throw new Error('Not enough questions');
+    // }
 
     const triviaQuestions = response.data.results.map((result: any): TriviaQuestion => {
       const { question, correct_answer, incorrect_answers, category } = result;
@@ -67,4 +76,6 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
 
     throw error;
   }
+
+  
 };
