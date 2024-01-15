@@ -20,7 +20,7 @@ const ResultModal: React.FC<ResultModalProps> = ({ open, score, onRestart, onGoH
             New quizz
           </Button>
           <Button onClick={onGoHome} color="primary">
-            Home
+            Settings
           </Button>
         </DialogContent>
       </Dialog>

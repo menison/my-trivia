@@ -5,7 +5,7 @@ import Settings from './pages/Settings';
 import { useGameState } from './hooks/useGameState';
 
 const App: React.FC = () => {
-  const gameService = useGameState(10, 0, 'easy');
+  const gameService = useGameState();
 
   return (
     <Router>

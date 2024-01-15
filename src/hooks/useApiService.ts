@@ -1,8 +1,9 @@
+import { ErrorRounded } from '@mui/icons-material';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as he from 'he';
-import { shuffleArray } from '../utils';
 
-const TRIVIA_API_URL = 'https://opentdb.com/api.php?amount=10';
+// const TRIVIA_API_URL = 'https://opentdb.com/api.php?amount=10';
+const TRIVIA_API_URL = 'https://opentdb.com/api.php'
 
 export interface TriviaQuestion {
   question: string;
@@ -17,13 +18,7 @@ interface TriviaApiError<T = unknown> extends AxiosError<T> {
   response?: AxiosResponse<T>;
 }
 
-// // Function to check if an error is a rate limit error
-// const isRateLimitError = (error: TriviaApiError): boolean => {
-//   return error.response?.status === 429;
-// };
-
-let questionsFetched = false;
-
+let flag = false;
 const isRateLimitError = (error: TriviaApiError): boolean => {
   return error.response?.status === 429;
 };
@@ -35,15 +30,10 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
     const response = await axios.get(TRIVIA_API_URL, {
       params: {
         amount,
-        type: 'multiple',
         difficulty,
+        type: 'multiple',
       },
     });
-
-    // Check the response code
-    // if ( response && (response.data.response_code === 1 || response.data.result.length < amount)) {
-    //   throw new Error('Not enough questions');
-    // }
 
     const triviaQuestions = response.data.results.map((result: any): TriviaQuestion => {
       const { question, correct_answer, incorrect_answers, category } = result;
@@ -57,26 +47,22 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
       };
     });
 
+    if (!triviaQuestions)
+      flag = true;
     console.log('Trivia questions loaded:', triviaQuestions);
-
-    // Set the flag to true after successfully fetching questions
-    questionsFetched = true;
 
     // Return the questions
     return triviaQuestions;
   } catch (error) {
     console.error('Error fetching trivia questions:', error);
-
+   
     // If the error is due to rate limiting and questions have not been fetched, introduce a delay and retry
-    if (isRateLimitError(error as TriviaApiError) && !questionsFetched) {
+    if (flag && isRateLimitError(error as TriviaApiError)) {
       console.log('Rate limited. Retrying after 2 seconds...');
       await new Promise(resolve => setTimeout(resolve, 3000));
       console.log('Retrying trivia questions...');
       return fetchTriviaQuestions(amount, difficulty);
     }
-
     throw error;
   }
-
-  
 };

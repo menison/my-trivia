@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect} from "react";
 import {
   Card,
   CardContent,
@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { GameState } from "../hooks/useGameState";
 import "../index.css";
-import { shuffleArray } from "../utils";
 
 interface QuestionCardProps {
   onAnswerClick: (selectedAnswer: string) => void;
@@ -21,12 +20,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
   onAnswerClick,
   gameService,
 }) => {
-  // const [currAnswerOptions, setCurrAnswerOptions] = useState<string[]>([]);
-
-  // useEffect(() => {
-  //   setCurrAnswerOptions(gameService.getAnswerChoices());
-  // }, [gameService.currentQuestionIndex]);
-
   useEffect(() => {
     const feedback = gameService
       .getAnswerFeedback()
@@ -84,9 +77,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
     <>
       <Button
         onClick={handleLifelineClick}
-        disabled={gameService.isAnyAnswerSelected || gameService.isFiftyUsed || !gameService.numFiftyLeft}
+        disabled={
+          gameService.isAnyAnswerSelected ||
+          gameService.isFiftyUsed ||
+          !gameService.numFiftyLeft
+        }
       >
-        50-50: {gameService.numFiftyLeft}
+        50-50: {Math.floor(gameService.numFiftyLeft)}
       </Button>
       <Card>
         <CardContent>
@@ -98,7 +95,6 @@ const QuestionCard: React.FC<QuestionCardProps> = ({
           </Typography>
           <Divider light />
           <Grid container spacing={2}>
-            {/* {gameService.getAnswerChoices().map((choice, index) => ( */}
             {gameService.getAnswerChoices.map((choice, index) => (
               <Grid item xs={6} key={index}>
                 <Button

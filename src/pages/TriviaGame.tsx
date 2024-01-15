@@ -1,6 +1,12 @@
-// TriviaGamePage.tsx
 import React from "react";
-import {Button, Card, CardContent, Container, Grid, Typography} from "@mui/material";
+import {
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
 import QuestionCard from "../components/QuestionCard";
 import ScoreCard from "../components/ScoreCard";
 import ResultModal from "../components/ResultModal";
@@ -18,6 +24,7 @@ const TriviaGame: React.FC<TriviaGameProps> = ({ gameService }) => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
+    console.log(gameService.numOfQuestions, gameService.difficulty);
     const fetchQuestions = async () => {
       await gameService.fetchQuestions();
       gameService.startTimer();
@@ -29,7 +36,7 @@ const TriviaGame: React.FC<TriviaGameProps> = ({ gameService }) => {
     ) {
       fetchQuestions();
     }
-  }, [gameService.isGameOver]);
+  },[gameService.questionsFetched] );
 
   const handleAnswerClick = (selectedAnswer: string) => {
     const currentQuestionData = gameService.getCurrentQuestion();
@@ -50,7 +57,7 @@ const TriviaGame: React.FC<TriviaGameProps> = ({ gameService }) => {
     } else {
       gameService.handleNextQuestion();
     }
-      gameService.setIsFiftyUsed(false);
+    gameService.setIsFiftyUsed(false);
   };
 
   const handleRestartGame = async () => {
