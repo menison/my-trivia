@@ -10,10 +10,9 @@ import {
 import QuestionCard from "../components/QuestionCard";
 import ScoreCard from "../components/ScoreCard";
 import ResultModal from "../components/ResultModal";
-import { GameState } from "../hooks/useGameState";
+import { GameState } from "../interfaces/GameState";
 import QProgress from "../components/QProgress";
 import Loading from "../components/Loading";
-import "../index.css";
 import { useNavigate } from "react-router-dom";
 
 interface TriviaGameProps {

@@ -9,7 +9,7 @@ import {
   Alert,
   Divider,
 } from "@mui/material";
-import { GameState } from "../hooks/useGameState";
+import { GameState } from "../interfaces/GameState";
 import "../index.css";
 
 interface QuestionCardProps {

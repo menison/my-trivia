@@ -1,48 +1,9 @@
 // GameService.ts
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { fetchTriviaQuestions, TriviaQuestion } from "./useApiService";
+import { fetchTriviaQuestions} from "./useApiService";
 import { shuffleArray } from "../utils";
-
-export interface GameState {
-  currentQuestionIndex: number;
-  numOfQuestions: number;
-  showLoading: boolean;
-  setShowLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  isGameOver: boolean;
-  setIsGameOver: React.Dispatch<React.SetStateAction<boolean>>;
-  nextQuestion: () => void;
-  increaseScore: () => void;
-  getScore: () => number;
-  resetScore: () => void;
-  handleAnswerClick: (selectedAnswer: string, correctAnswer: string) => void;
-  handleNextQuestion: () => void;
-  handleGoHomeOrRestart: () => void;
-  timer: number;
-  startTimer: () => void;
-  resetTimer: () => void;
-  fetchQuestions: () => Promise<void>;
-  getCurrentQuestion: () => TriviaQuestion;
-  getAnswerChoices: string[];
-  getAnswerFeedback: () => Array<{
-    choice: string;
-    isCorrect: boolean;
-    isSelected: boolean;
-  }>;
-  isAnyAnswerSelected: boolean;
-  questionsFetched: boolean;
-  setNumOfQuestions: Dispatch<SetStateAction<number>>;
-  setDifficulty: Dispatch<SetStateAction<string>>;
-  difficulty: string;
-  isFiftyUsed: boolean;
-  setIsFiftyUsed: React.Dispatch<React.SetStateAction<boolean>>;
-  numFiftyLeft: number;
-  setNumFiftyLeft: Dispatch<SetStateAction<number>>;
-  snackbarOpen: boolean;
-  setSnackbarOpen: Dispatch<SetStateAction<boolean>>;
-  snackbarMessage: string;
-  setSnackbarMessage: Dispatch<SetStateAction<string>>;
-  getActualNumOfQuestions: () => number;
-}
+import { GameState } from "../interfaces/GameState";
+import { TriviaQuestion } from "../interfaces/TriviaQuestion";
 
 export const useGameState = (): GameState => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -105,7 +66,8 @@ export const useGameState = (): GameState => {
     if (!currentQuestionData) return [];
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
     if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers)) return [];
-    return [correctAnswer, ...incorrectAnswers];
+    return shuffleArray([correctAnswer, ...incorrectAnswers]);
+    // return [correctAnswer, ...incorrectAnswers];
   }, [currentQuestionIndex, questions]);
 
   const getAnswerFeedback = (): Array<{
