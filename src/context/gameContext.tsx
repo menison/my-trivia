@@ -146,7 +146,7 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
   };
 
   const handleGoHomeOrRestart = () => {
-    playCorrectAnswer();
+    playButtonClick();
     setIsGameOver(false);
     setShowLoading(true);
     setIsAnyAnswerSelected(false);
