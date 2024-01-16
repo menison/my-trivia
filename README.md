@@ -1,11 +1,11 @@
 # TriviApp - Some screenshots with use-cases:
-![My Image](./public/app-screenshots/settings-unexpanded.png)
-![My Image](./public/app-screenshots/settings.png)
-![My Image](./public/app-screenshots/triviagame.png)
-![My Image](./public/app-screenshots/triviagame-question-correct.png)
-![My Image](./public/app-screenshots/triviagame-question-wrong.png)
-![My Image](./public/app-screenshots/triviagame-fifty-fifty-redeemed.png)
-![My Image](./public/app-screenshots/gameOverModal.png)
+![My Image](./public/app_screenshots/settings-unexpanded.png)
+![My Image](./public/app_screenshots/settings.png)
+![My Image](./public/app_screenshots/triviagame.png)
+![My Image](./public/app_screenshots/triviagame-question-correct.png)
+![My Image](./public/app_screenshots/triviagame-question-wrong.png)
+![My Image](./public/app_screenshots/triviagame-fifty-fifty-redeemed.png)
+![My Image](./public/app_screenshots/gameOverModal.png)
 
 
 # Getting Started with Create React App
