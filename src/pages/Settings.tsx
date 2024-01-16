@@ -5,7 +5,6 @@ import PsychologyAltTwoToneIcon from '@mui/icons-material/PsychologyAltTwoTone';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useGameContext } from '../context/gameContext';
 
-
 const Settings: React.FC = () => {
   const [numQuestions, setNumQuestions] = useState(10);
   const [difficulty, setDifficulty] = useState<string>('easy');
@@ -24,7 +23,7 @@ const Settings: React.FC = () => {
       <Typography variant="h1" component="div" align="center">
         <PsychologyAltTwoToneIcon className ="h1-icon"  style={{fontSize:'10rem'}}/>
       </Typography>
-      <Typography variant="h1" component="div" align="center">
+      <Typography variant="h3" component="div" align="center">
         TriviApp
       </Typography>
       <Typography id="num-questions-slider" gutterBottom>

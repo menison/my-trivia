@@ -10,18 +10,15 @@ import {
 import QuestionCard from "../components/QuestionCard";
 import ScoreCard from "../components/ScoreCard";
 import ResultModal from "../components/ResultModal";
-import { IGameContext } from "../interfaces/IGameContext";
 import QProgress from "../components/QProgress";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
 import { useGameContext } from "../context/gameContext";
 
-
-
 const TriviaGame: React.FC = () => {
   const navigate = useNavigate();
   const gameService = useGameContext();
-
+  
   React.useEffect(() => {
     console.log(gameService.numOfQuestions, gameService.difficulty);
     const fetchQuestions = async () => {

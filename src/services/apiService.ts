@@ -4,15 +4,6 @@ import { ITriviaQuestion } from '../interfaces/ITriviaQuestion';
 
 const TRIVIA_API_URL = 'https://opentdb.com/api.php'
 
-// export interface TriviaQuestion {
-//   question: string;
-//   correctAnswer: string;
-//   incorrectAnswers: string[];
-//   answerOptions: string[],
-//   category: string;
-//   selectedAnswer: string;
-// }
-
 interface TriviaApiError<T = unknown> extends AxiosError<T> {
   response?: AxiosResponse<T>;
 }

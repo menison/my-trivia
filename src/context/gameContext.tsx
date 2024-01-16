@@ -1,15 +1,12 @@
 // GameContext.ts
 import {
-  Dispatch,
-  Provider,
-  SetStateAction,
   createContext,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { fetchTriviaQuestions } from "../services/useApiService";
+import { fetchTriviaQuestions } from "../services/apiService";
 import { shuffleArray } from "../utils";
 import { IGameContext } from "../interfaces/IGameContext";
 import { ITriviaQuestion } from "../interfaces/ITriviaQuestion";
@@ -90,8 +87,8 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
     if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers))
       return [];
-    return shuffleArray([correctAnswer, ...incorrectAnswers]);
-    // return [correctAnswer, ...incorrectAnswers];
+    // return shuffleArray([correctAnswer, ...incorrectAnswers]);
+    return [correctAnswer, ...incorrectAnswers];
   }, [currentQuestionIndex, questions]);
 
   const getAnswerFeedback = (): Array<{
