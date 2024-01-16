@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import "../index.css";
 import { useGameContext } from "../context/gameContext";
+import buttonClickSoundFile from "../assets/audio/button-sound.mp3";
+import useSound from "use-sound";
 
 interface QuestionCardProps {
   onAnswerClick: (selectedAnswer: string) => void;
@@ -18,6 +20,7 @@ interface QuestionCardProps {
 
 const QuestionCard: React.FC<QuestionCardProps> = ({ onAnswerClick }) => {
   const gameService = useGameContext();
+  const [playButtonClick] = useSound(buttonClickSoundFile);
 
   useEffect(() => {
     const feedback = gameService
@@ -59,6 +62,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ onAnswerClick }) => {
   const handleLifelineClick = () => {
     if (!gameService.isFiftyUsed && gameService.numFiftyLeft > 0) {
       gameService.setIsFiftyUsed(true);
+      playButtonClick();
       gameService.setNumFiftyLeft((prevNumFiftyLeft) => prevNumFiftyLeft - 1);
     }
   };
@@ -74,60 +78,72 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ onAnswerClick }) => {
 
   return (
     <>
-      <Button
-        onClick={handleLifelineClick}
-        disabled={
-          gameService.isAnyAnswerSelected ||
-          gameService.isFiftyUsed ||
-          !gameService.numFiftyLeft
-        }
-      >
-        50-50: {Math.floor(gameService.numFiftyLeft)}
-      </Button>
-      <Card>
-        <CardContent>
-          <Typography variant="caption" component="div">
-            Category: {gameService.getCurrentQuestion()?.category}
-          </Typography>
-          <Typography variant="h6" component="div">
-            {gameService.getCurrentQuestion()?.question}
-          </Typography>
-          <Divider light />
-          <Grid container spacing={2}>
-            {gameService.getAnswerChoices.map((choice, index) => (
-              <Grid item xs={6} key={index}>
-                <Button
-                  fullWidth
-                  onClick={() => {
-                    onAnswerClick(choice);
-                  }}
-                  className={getButtonClass(choice)}
-                  disabled={shouldButtonRender(choice)}
-                >
-                  {choice}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
-      <Snackbar
-        open={gameService.snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert
+      <Grid>
+        <Card sx={{display: 'flex', flexDirection:'column', justifyContent:'space-around', alignItems: 'center'}} >
+          <CardContent >
+            <Typography variant="h6" component="div" className="question-div">
+              <Button
+                variant="outlined"
+                sx={{ marginBottom: "1.6rem", fontSize: "0.75rem", borderRadius: '10px'}}
+                onClick={handleLifelineClick}
+                disabled={
+                  gameService.isAnyAnswerSelected ||
+                  gameService.isFiftyUsed ||
+                  !gameService.numFiftyLeft
+                }
+              >
+                50-50: {Math.floor(gameService.numFiftyLeft)}
+              </Button>
+            </Typography>
+            <Typography
+              variant="caption"
+              component="div"
+              className="question-div"
+            >
+              Category: {gameService.getCurrentQuestion()?.category}
+            </Typography>
+            <Typography variant="h6" component="div">
+              {gameService.getCurrentQuestion()?.question}
+            </Typography>
+            <Divider light sx={{marginTop: '0.75rem'}}/>
+            <Grid container spacing={2} sx={{ marginTop: "0.3rem", marginBottom: "0.3rem" }}>
+              {gameService.getAnswerChoices.map((choice, index) => (
+                <Grid item xs={6} key={index}>
+                  <Button
+                    variant="outlined" sx={{borderRadius: '10px'}}
+                    fullWidth
+                    onClick={() => {
+                      onAnswerClick(choice);
+                    }}
+                    className={getButtonClass(choice)}
+                    disabled={shouldButtonRender(choice)}
+                  >
+                    {choice}
+                  </Button>
+                </Grid>
+              ))}
+            </Grid>
+            <Divider light sx={{marginTop: '0.75rem'}}/>
+          </CardContent>
+        </Card>
+        <Snackbar
+          open={gameService.snackbarOpen}
+          autoHideDuration={6000}
           onClose={handleClose}
-          severity={
-            gameService.snackbarMessage === "Correct! Well done!"
-              ? "success"
-              : "error"
-          }
-          sx={{ width: "100%" }}
         >
-          {gameService.snackbarMessage}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={handleClose}
+            severity={
+              gameService.snackbarMessage === "Correct! Well done!"
+                ? "success"
+                : "error"
+            }
+            sx={{ width: "100%" }}
+          >
+            {gameService.snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </Grid>
     </>
   );
 };

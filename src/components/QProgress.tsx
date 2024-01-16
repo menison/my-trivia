@@ -10,18 +10,16 @@ const QProgress: React.FC<QProgressProps> = ({
   questionsLeft,
   totalQuestions,
 }) => (
-  <Grid container alignItems="center">
-    <Grid item xs={8}>
+  <Grid sx={{width: '100%',display: 'block', justifyContent: 'center', marginTop: '1rem'}}>
+    <Typography variant="h1" component="div" sx={{width:'100%', display: 'block'}}>
       <LinearProgress
         variant="determinate"
         value={((totalQuestions - questionsLeft) / totalQuestions) * 100}
       />
-    </Grid>
-    <Grid item xs={4} style={{ textAlign: "center" }}>
-      <Typography variant="caption" color="textSecondary">
-        {totalQuestions - questionsLeft} passed / {questionsLeft} left
-      </Typography>
-    </Grid>
+    </Typography>
+    <Typography variant="caption" component="div" color="textSecondary" sx={{display:'flex',justifyContent: 'space-around', marginTop: '1rem'}}>
+      {totalQuestions - questionsLeft} passed / {questionsLeft} left
+    </Typography>
   </Grid>
 );
 
