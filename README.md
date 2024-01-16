@@ -13,7 +13,7 @@ You can use a "50-50 Lifeline" to reduce the number of choices to two. You get 1
 ![My Image](./public/app_screenshots/triviagame-question-fifty-fifty-redeemed.png)
 Eventually, you will be indicated regarding your final score. You will be given the option to go back to settings page to customize the settings, or restart with new questions of the same settings.
 ![My Image](./public/app_screenshots/gameOverModal.png)
-
+If the timer expires before you managed to answer on all questions - the game will gracefully end (letting you pick your last answer before it ends).
 
 # Getting Started with Create React App
 
