@@ -90,7 +90,7 @@ btn[disabled]:hover {
 }
 
 .h1-icon{
-  color: rgb(255, 153, 0);
+  color: rgb(0, 110, 255);
 }
 
 .info-icon{
@@ -168,4 +168,17 @@ btn[disabled]:hover {
   justify-content: space-around;
   align-items: center;
   margin-top: 1rem;
+  color: rgb(0, 110, 255);
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.loading-modal{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.franchise{
+  color: rgb(0, 110, 255);
 }

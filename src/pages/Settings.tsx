@@ -45,7 +45,7 @@ const Settings: React.FC = () => {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-around",
-          backgroundColor: 'rgba(255,255,255,0.85)',
+          backgroundColor: 'rgba(255,255,255,0.75)',
           padding: '5px'
         }}
       >
@@ -54,21 +54,21 @@ const Settings: React.FC = () => {
             className="h1-icon"  fontSize="inherit"
           />
         </Typography>
-        <Typography variant="h3" component="div" align="center">
+        <Typography variant="h3" component="div" align="center" className="franchise">
           <b>TriviApp</b>
         </Typography>
 
         <Box mt={2}>
           <Paper elevation={3} style={{ padding: "5px" }}>
-            <Typography className="divim" variant="h6" gutterBottom>
+            <Typography className="divim" variant="h6" gutterBottom sx={{color: 'rgb(0, 110, 255)'}}>
               Instructions:
             </Typography>
             <Typography className="divim" variant="body1">
               Welcome to the Trivia Game! Here's how to play:
             </Typography>
             <Divider style={{ margin: "5px 0" }} />
-            <Typography className="divim" variant="body1">
-              <strong>Rules:</strong>
+            <Typography className="divim" variant="body1" sx={{color: 'rgb(0, 110, 255)'}} >
+              <strong><u>Rules:</u></strong>
             </Typography>
             <List>
               <ListItem>
@@ -109,7 +109,7 @@ const Settings: React.FC = () => {
               </ListItem>
             </List>
             <Divider style={{ margin: "5px 0" }} />
-            <Typography className="divim" variant="body1">
+            <Typography className="divim" variant="body1" sx={{color: 'rgb(0, 110, 255)'}}>
               <strong>Fifty-Fifty Lifelines:</strong>
             </Typography>
             <Typography className="divim" variant="body1">
@@ -136,7 +136,7 @@ const Settings: React.FC = () => {
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "space-around" }}>
             <TextField
-              sx={{ textAlign: "center", width: "25%" }}
+              sx={{ textAlign: "center", width: "25%"}}
               label="Difficulty"
               select
               value={difficulty}
@@ -144,9 +144,9 @@ const Settings: React.FC = () => {
               fullWidth
               margin="normal"
             >
-              <MenuItem value="easy">Easy</MenuItem>
-              <MenuItem value="medium">Medium</MenuItem>
-              <MenuItem value="hard">Hard</MenuItem>
+              <MenuItem className="franchise" value="easy">Easy</MenuItem>
+              <MenuItem className="franchise" value="medium">Medium</MenuItem>
+              <MenuItem className="franchise" value="hard">Hard</MenuItem>
             </TextField>
           </Box>
           <Box mt={2} className="divim">
