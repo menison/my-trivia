@@ -196,3 +196,21 @@ btn[disabled]:hover {
   flex-direction: row;
   justify-content: space-around;
 }
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  .trivia-main-card {
+    width: 100%;
+    height: 100%;
+    background-size: contain; /* Adjust background size for smaller screens */
+  }
+
+  .trivia-main-grid {
+    padding: 1rem; /* Add padding to the grid for better spacing */
+  }
+
+  .root-container {
+    flex-direction: column; /* Stack elements vertically on smaller screens */
+  }
+  
+}
