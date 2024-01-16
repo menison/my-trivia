@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as he from 'he';
-import { TriviaQuestion } from '../interfaces/TriviaQuestion';
+import { ITriviaQuestion } from '../interfaces/ITriviaQuestion';
 
 const TRIVIA_API_URL = 'https://opentdb.com/api.php'
 
@@ -22,7 +22,7 @@ const isRateLimitError = (error: TriviaApiError): boolean => {
   return error.response?.status === 429;
 };
 
-export const fetchTriviaQuestions = async (amount: number, difficulty: string): Promise<TriviaQuestion[]> => {
+export const fetchTriviaQuestions = async (amount: number, difficulty: string): Promise<ITriviaQuestion[]> => {
   try {
     console.log('Fetching trivia questions...');
     
@@ -34,7 +34,7 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
       },
     });
 
-    const triviaQuestions = response.data.results.map((result: any): TriviaQuestion => {
+    const triviaQuestions = response.data.results.map((result: any): ITriviaQuestion => {
       const { question, correct_answer, incorrect_answers, category } = result;
       return {
         question: he.decode(question), // Decode HTML entities

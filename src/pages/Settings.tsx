@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, MenuItem, Box, Slider, Divider, Paper, List, ListItem, ListItemText } from '@mui/material';
-import { GameState } from '../interfaces/GameState';
 import { useNavigate } from 'react-router-dom';
 import PsychologyAltTwoToneIcon from '@mui/icons-material/PsychologyAltTwoTone';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { useGameContext } from '../context/gameContext';
 
-interface SettingsProps{
-  gameService: GameState;
-}
-const Settings: React.FC<SettingsProps> = ({gameService}) => {
+
+const Settings: React.FC = () => {
   const [numQuestions, setNumQuestions] = useState(10);
   const [difficulty, setDifficulty] = useState<string>('easy');
   const navigate = useNavigate();
+  const gameService = useGameContext();
 
   const handleStartGame = () => {
     gameService.setNumOfQuestions(numQuestions);

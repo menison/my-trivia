@@ -1,23 +1,46 @@
-// GameService.ts
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { fetchTriviaQuestions} from "./useApiService";
+// GameContext.ts
+import {
+  Dispatch,
+  Provider,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { fetchTriviaQuestions } from "../services/useApiService";
 import { shuffleArray } from "../utils";
-import { GameState } from "../interfaces/GameState";
-import { TriviaQuestion } from "../interfaces/TriviaQuestion";
+import { IGameContext } from "../interfaces/IGameContext";
+import { ITriviaQuestion } from "../interfaces/ITriviaQuestion";
 
-export const useGameState = (): GameState => {
+interface GameContextProps {
+  children: React.ReactNode;
+}
+
+const GameContext = createContext<IGameContext | undefined>(undefined);
+
+export const useGameContext = (): IGameContext => {
+  const context = useContext(GameContext);
+  if (!context) {
+    throw new Error("useGameContext must be used within a GameProvider");
+  }
+  return context;
+};
+
+export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [showLoading, setShowLoading] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
-  const [timer, setTimer] = useState(10*30);
-  const [questions, setQuestions] = useState<TriviaQuestion[]>([]);
+  const [timer, setTimer] = useState(10 * 30);
+  const [questions, setQuestions] = useState<ITriviaQuestion[]>([]);
   const [questionsFetched, setQuestionsFetched] = useState(false);
   const [isAnyAnswerSelected, setIsAnyAnswerSelected] = useState(false);
   const [numOfQuestions, setNumOfQuestions] = useState(10);
-  const [difficulty, setDifficulty] = useState('easy');
+  const [difficulty, setDifficulty] = useState("easy");
   const [isFiftyUsed, setIsFiftyUsed] = useState<boolean>(false);
-  const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions/5);
+  const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions / 5);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
@@ -39,7 +62,7 @@ export const useGameState = (): GameState => {
   const fetchQuestions = async () => {
     try {
       setShowLoading(true);
-      const triviaQuestions: TriviaQuestion[] = await fetchTriviaQuestions(
+      const triviaQuestions: ITriviaQuestion[] = await fetchTriviaQuestions(
         numOfQuestions,
         difficulty
       );
@@ -53,19 +76,20 @@ export const useGameState = (): GameState => {
     }
   };
 
-  const getCurrentQuestion = (): TriviaQuestion => {
+  const getCurrentQuestion = (): ITriviaQuestion => {
     return questions[currentQuestionIndex];
   };
 
   const getActualNumOfQuestions = (): number => {
     return questions.length;
-  }
+  };
 
   const getAnswerChoices = useMemo(() => {
     const currentQuestionData = questions[currentQuestionIndex];
     if (!currentQuestionData) return [];
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
-    if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers)) return [];
+    if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers))
+      return [];
     return shuffleArray([correctAnswer, ...incorrectAnswers]);
     // return [correctAnswer, ...incorrectAnswers];
   }, [currentQuestionIndex, questions]);
@@ -101,8 +125,8 @@ export const useGameState = (): GameState => {
   };
 
   const resetNumFiftyLeft = () => {
-    setNumFiftyLeft(numOfQuestions/5);
-  }
+    setNumFiftyLeft(numOfQuestions / 5);
+  };
 
   const handleAnswerClick = (selectedAnswer: string, correctAnswer: string) => {
     setIsAnyAnswerSelected(true);
@@ -129,7 +153,7 @@ export const useGameState = (): GameState => {
     resetNumFiftyLeft();
   };
 
-  return {
+  const contextValue: IGameContext = {
     currentQuestionIndex,
     numOfQuestions,
     showLoading,
@@ -165,5 +189,8 @@ export const useGameState = (): GameState => {
     setSnackbarMessage,
     getActualNumOfQuestions,
   };
-};
 
+  return (
+    <GameContext.Provider value={contextValue}>{children}</GameContext.Provider>
+  );
+};
