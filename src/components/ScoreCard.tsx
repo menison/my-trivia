@@ -7,9 +7,11 @@ interface ScoreCardProps {
 
 const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
   return (
-    <Card>
+    <Card  className="score-card">
       <CardContent>
-        <Typography>Score: {score}</Typography>
+        <Typography variant="h6" component="div">
+          Score: {score}
+        </Typography>
       </CardContent>
     </Card>
   );

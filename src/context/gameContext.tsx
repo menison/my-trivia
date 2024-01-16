@@ -1,15 +1,13 @@
-// GameContext.ts
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { fetchTriviaQuestions } from "../services/apiService";
 import { shuffleArray } from "../utils";
 import { IGameContext } from "../interfaces/IGameContext";
 import { ITriviaQuestion } from "../interfaces/ITriviaQuestion";
+import { useSound } from "use-sound";
+import buttonClickSoundFile from '../assets/audio/button-sound.mp3';
+import correctAnswerSoundFile from '../assets/audio/correct-answer.mp3';
+import wrongAnswerSoundFile from '../assets/audio/wrong-answer.mp3';
+
 
 interface GameContextProps {
   children: React.ReactNode;
@@ -40,6 +38,11 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
   const [numFiftyLeft, setNumFiftyLeft] = useState<number>(numOfQuestions / 5);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const [playButtonClick] = useSound(buttonClickSoundFile);
+  const [playCorrectAnswer] = useSound(correctAnswerSoundFile);
+  const [playWrongAnswer] = useSound(wrongAnswerSoundFile);
+
 
   const startTimer = () => {
     setTimer(numOfQuestions * 30);
@@ -87,8 +90,8 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
     const { correctAnswer, incorrectAnswers } = currentQuestionData;
     if (!correctAnswer || !incorrectAnswers || !Array.isArray(incorrectAnswers))
       return [];
-    // return shuffleArray([correctAnswer, ...incorrectAnswers]);
-    return [correctAnswer, ...incorrectAnswers];
+    return shuffleArray([correctAnswer, ...incorrectAnswers]);
+    // return [correctAnswer, ...incorrectAnswers];
   }, [currentQuestionIndex, questions]);
 
   const getAnswerFeedback = (): Array<{
@@ -127,10 +130,13 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
 
   const handleAnswerClick = (selectedAnswer: string, correctAnswer: string) => {
     setIsAnyAnswerSelected(true);
+    playButtonClick();
 
     if (selectedAnswer === correctAnswer) {
+      playCorrectAnswer();
       increaseScore();
     }
+    else playWrongAnswer();
   };
 
   const handleNextQuestion = () => {
@@ -139,6 +145,7 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
   };
 
   const handleGoHomeOrRestart = () => {
+    playCorrectAnswer();
     setIsGameOver(false);
     setShowLoading(true);
     setIsAnyAnswerSelected(false);
