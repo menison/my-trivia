@@ -43,7 +43,7 @@ const Settings: React.FC = () => {
   return (
     <>
       <Container sx={{ height: "100vh", width: "100vw" }}>
-        <Typography
+        {/* <Typography
           component="div"
           sx={{
             display: "flex",
@@ -52,49 +52,35 @@ const Settings: React.FC = () => {
             flexDirection: "column",
             height: "80%",
           }}
-        >
-          <Typography variant="h1" component="div" align="center">
-            <PsychologyAltTwoToneIcon className="h1-icon" fontSize="inherit" />
-          </Typography>
-          <Typography
-            variant="h3"
-            component="div"
-            align="center"
-            className="franchise"
-          >
-            <b>TriviApp</b>
-          </Typography>
-
+        > */}
           <Box mt={2}>
+            <Typography variant="h1" component="div" align="center" >
+              <PsychologyAltTwoToneIcon className="h1-icon" fontSize="inherit" />
+            </Typography>
+            <Typography
+              variant="h3"
+              component="div"
+              align="center"
+              className="franchise"
+              gutterBottom
+            >
+              <b>TriviApp</b>
+            </Typography>
             <Paper elevation={3} style={{ padding: "5px" }}>
-              <Typography
+              <Typography gutterBottom
                 className="divim"
                 variant="h6"
-                gutterBottom
-                sx={{ color: "rgb(0, 110, 255)" }}
               >
-                Instructions:
-              </Typography>
-              <Typography className="divim" variant="body1">
-                Welcome to the Trivia Game! Here's how to play:
+                Welcome to TriviApp!
               </Typography>
               <Divider />
-              <Typography
-                className="divim"
-                variant="body1"
-                sx={{ color: "rgb(0, 110, 255)" }}
-              >
-                <strong>
-                  <u>Rules:</u>
-                </strong>
-              </Typography>
               <Accordion>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel3-content"
                   id="panel3-header"
                 >
-                  If your'e a first-timer, press to read the instructions
+                  <strong>If your'e a first-timer, press to read the instructions</strong>
                 </AccordionSummary>
                 <AccordionDetails>
                   <List>
@@ -200,7 +186,7 @@ const Settings: React.FC = () => {
               </Button>
             </Box>
           </Box>
-        </Typography>
+        {/* </Typography> */}
       </Container>
     </>
   );
