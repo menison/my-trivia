@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -9,17 +9,16 @@ import {
   Alert,
   Divider,
 } from "@mui/material";
-import { GameState } from "../hooks/useGameState";
 import "../index.css";
+import { useGameContext } from "../context/gameContext";
 
 interface QuestionCardProps {
   onAnswerClick: (selectedAnswer: string) => void;
-  gameService: GameState;
 }
-const QuestionCard: React.FC<QuestionCardProps> = ({
-  onAnswerClick,
-  gameService,
-}) => {
+
+const QuestionCard: React.FC<QuestionCardProps> = ({ onAnswerClick }) => {
+  const gameService = useGameContext();
+
   useEffect(() => {
     const feedback = gameService
       .getAnswerFeedback()
