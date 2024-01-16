@@ -1,4 +1,4 @@
-# TriviApp - Some screenshots with use-cases:
+# Welcome to TriviApp! Brief explanation with screenshots and use-cases:
 In the settings page you can expand the 'Accordion' element to read the instructions. You cam customize the number of questions to fetch (anything between 1 to 50) and the difficulty (easy, medium or hard).
 ![My Image](./public/app_screenshots/settings-unexpanded.png)
 The amount of questions you choose increases the amount of time and "50-50 Lifelines" you receive.
