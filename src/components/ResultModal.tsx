@@ -22,17 +22,19 @@ const ResultModal: React.FC<ResultModalProps> = ({
 }) => {
   return (
     <Dialog open={open} onClose={onRestart}>
-      <DialogTitle>Game Over</DialogTitle>
-      <DialogContent>
-        <Typography variant="body1" component="div">
-          Final Score: {score}
+      <DialogTitle align='center'>Game Over</DialogTitle>
+      <DialogContent className="dialog-content" sx={{borderRadius:'30px'}}>
+        <Typography variant="h3" component="div">
+          Final Score: <strong>{score}</strong>
         </Typography>
-        <Button onClick={onRestart} color="primary">
-          New quizz
-        </Button>
-        <Button onClick={onGoHome} color="primary">
-          Settings
-        </Button>
+        <Typography component="div" className="result-modal-btns">
+          <Button variant="outlined" onClick={onRestart} color="primary" sx={{marginRight: '1rem'}}>
+            New quizz
+          </Button>
+          <Button variant="outlined" onClick={onGoHome} color="primary">
+            Settings
+          </Button>
+        </Typography>
       </DialogContent>
     </Dialog>
   );

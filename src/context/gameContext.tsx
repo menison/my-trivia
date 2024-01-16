@@ -141,6 +141,7 @@ export const GameProvider: React.FC<GameContextProps> = ({ children }) => {
 
   const handleNextQuestion = () => {
     setIsAnyAnswerSelected(false);
+    playButtonClick();
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
   };
 

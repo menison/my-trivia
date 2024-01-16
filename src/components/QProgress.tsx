@@ -17,7 +17,7 @@ const QProgress: React.FC<QProgressProps> = ({
         value={((totalQuestions - questionsLeft) / totalQuestions) * 100}
       />
     </Typography>
-    <Typography variant="caption" component="div" color="textSecondary" sx={{display:'flex',justifyContent: 'space-around', margi: '0.15rem'}}>
+    <Typography variant="caption" component="div" color="textSecondary" sx={{display:'flex',justifyContent: 'space-around', marginTop: '1rem'}}>
       {totalQuestions - questionsLeft} passed / {questionsLeft} left
     </Typography>
   </Grid>

@@ -1,8 +1,8 @@
 html, #root{
   max-height: 100%;
   max-width: 100%;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
   font-family: 'Gill sans', open-sans;
   font-family: "Salsa", cursive;
   font-weight: 400;
@@ -12,10 +12,10 @@ html, #root{
 }
 
 body.vsc-initialized{
-  width: 100%;
-  height:100%;
-
- 
+  height: 100vh;
+  width: 100vw;
+  max-height: 100%;
+  max-width: 100%;
   font-family: "Salsa", cursive;
   font-weight: 400;
   font-style: normal;
@@ -104,14 +104,13 @@ btn[disabled]:hover {
 
 .trivia-main-card{
   background-image: url(./assets/img/10.jpg);
-  background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('./assets/img/14.jpg');
+  background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), url('./assets/img/11.jpg');
   background-size: cover;
   display: flex;
   width: 50%;
   height: 80%;
   max-height: 100%;
   max-width: 100%;
-  border-radius: 10px;
 }
 
 .trivia-main-grid{
@@ -168,9 +167,9 @@ btn[disabled]:hover {
   justify-content: space-around;
   align-items: center;
   margin-top: 1rem;
-  color: rgb(0, 110, 255);
-  font-weight: bold;
   font-size: 1.25rem;
+  color: rgb(0, 110, 255);
+  opacity: 1;
 }
 
 .loading-modal{
@@ -181,4 +180,19 @@ btn[disabled]:hover {
 
 .franchise{
   color: rgb(0, 110, 255);
+}
+
+.dialog-content{
+  height: 20vh;
+  width: 20vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.result-modal-btns{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }

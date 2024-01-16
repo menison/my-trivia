@@ -71,13 +71,13 @@ const TriviaGame: React.FC = () => {
   return (
     <Container className="root-container">
       <Grid className="trivia-main-grid" >
-        <Card className="trivia-main-card">
+        <Card className="trivia-main-card" sx={{borderRadius: '30px'}}>
             <CardContent sx={{ maxWidth:'100%', width:'100%'}} >
               <Typography variant="h6" component="div" sx={{marginBottom: '2.5rem'}}>
                 <ScoreCard score={gameService.getScore()} />
               </Typography>
               <Divider light sx={{marginBottom: '0.5rem'}}/>
-              <Typography variant="h6" component="div" className="timer" sx={{marginBottom: '0.5rem'}}>
+              <Typography variant="h6" component="div" className="timer" sx={{marginBottom: '0.5rem', opacity: '0.9', color:'grey'}}>
                 Time Left:{" "}
                 {Math.floor(gameService.timer / 60)
                   .toString()
@@ -97,8 +97,7 @@ const TriviaGame: React.FC = () => {
                     totalQuestions={gameService.numOfQuestions}
                   />
                 </Typography>
-                <Divider light sx={{marginTop: '2.75rem', marginBottom: '1rem'}}/>
-                <Button variant="contained" sx ={{borderRadius: '10px', opacity:'0.75'}}
+                <Button variant="contained" sx ={{borderRadius: '10px', opacity:'0.75', marginTop: '1rem'}}
                   fullWidth
                   onClick={handleNextQuestion}
                   disabled={!gameService.isAnyAnswerSelected}
