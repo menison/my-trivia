@@ -1,10 +1,17 @@
 # TriviApp - Some screenshots with use-cases:
+In the settings page you can expand the 'Accordion' element to read the instructions. You cam customize the number of questions to fetch (anything between 1 to 50) and the difficulty (easy, medium or hard).
 ![My Image](./public/app_screenshots/settings-unexpanded.png)
+The amount of questions you choose increases the amount of time and "50-50 Lifelines" you receive.
 ![My Image](./public/app_screenshots/settings.png)
+You will be displayed with a question including the category it comes from, and 4 answer choices.
 ![My Image](./public/app_screenshots/triviagame.png)
+You will be provided with a feedback in a form of an effect and sound that will indicate whether you were correct or not.
 ![My Image](./public/app_screenshots/triviagame-question-correct.png)
+The incorrect answer sound is awful, try being correct. The correct answer sound is rewarding though.
 ![My Image](./public/app_screenshots/triviagame-question-wrong.png)
+You can use a "50-50 Lifeline" to reduce the number of choices to two. You get 1 of those for every 5 questions. Use it with caution.
 ![My Image](./public/app_screenshots/triviagame-fifty-fifty-redeemed.png)
+Eventually, you will be indicated regarding your final score. You will be given the option to go back to settings page to customize the settings, or restart with new questions of the same settings.
 ![My Image](./public/app_screenshots/gameOverModal.png)
 
 
