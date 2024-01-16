@@ -39,7 +39,7 @@ export const fetchTriviaQuestions = async (amount: number, difficulty: string): 
 
     if (!triviaQuestions)
       isResponseEmpty = true;
-    console.log('Trivia questions loaded:', triviaQuestions);
+    console.log('Trivia questions loaded!');
 
     // Return the questions
     return triviaQuestions;
